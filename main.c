@@ -6,29 +6,45 @@
 
 
 int main(){
-    // int op;
-    // while (op != 0)
-    // {
-    //     int op = menu();
-    //    switch (op)
-    //    {
-    //    case 1:
-        
-    //     break;
-    //    case 2:
-        
-    //     break;
-    //    case 3:
-        
-    //     break;
-    //    case 4:
-        
-    //     break;
-       
-    //    default:
-    //     break;
-    //    }
-    // }
-    ColetarDados();
+    int op;
+    infoUsuario user = {0};
+    printf("Seja bem-vindo !\n");
 
+    ColetarDados(&user);
+    while (op != 0)
+    {
+        int op = menu();
+        switch (op)
+        {
+            case 1:
+                system("cls");
+                system("clear");
+                exibirRelatorio(&user);
+            break;
+            
+            case 2:
+                system("cls");
+                system("clear");
+                ColetarDados(&user);
+            
+            break;
+            
+            case 3:
+                system("cls");
+                system("clear");
+                formulario(&user);
+            break;
+
+            case 0:
+                system("cls");
+                system("clear");
+                break;
+       
+            default:
+                printf("Digite uma opção existente");
+                break;
+       }
+    }
+    printf("Obrigado pela preferencia");
+    return 0;
 }

@@ -14,6 +14,7 @@ float CigarrosNaoFumados();
 int tempoVidaRecuperadoMinutos();
 int menu();
 void ColetarDados();
+void exibirRelatorio();
 
 typedef struct {
     char nome[50];

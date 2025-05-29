@@ -6,9 +6,6 @@
 
 
 
-
-
-
 typedef struct 
 {
     char nome[50];
@@ -193,7 +190,9 @@ int tempoVidaRecuperadoMinutos(int cigarrosPorDia, int diasSemFumar) {
 void ColetarDados(infoUsuario *user){
     printf("(cadastro inicial)");
     printf("Nome:");
-    scanf("%s",&user->nome);
+    getchar();
+    fgets(user->nome,sizeof(user->nome),stdin);
+    user->nome[strcspn(user->nome, "\n")] = 0;
 
     printf("cigarros por dia:");
     scanf("%i",&user->cigarrosPorDia);
@@ -218,21 +217,32 @@ void ColetarDados(infoUsuario *user){
 void exibirRelatorio(infoUsuario *user){
     printf("O seu relatorio completo\n");
     printf("Nome %s\n", user->nome);
-    printf("Nome %s\n", user->nome);
+    printf("Nome %i\n", user->cigarrosPorDia);
+    printf("Nome %f\n", user->macosPorDia);
+    printf("Nome %i\n", user->diasSemFumar);
 
+    float economia = economiaPorDinheiro(user->precoMaco, user->macosPorDia, user->diasSemFumar);
+
+    float naoFumados = CigarrosNaoFumados(user->cigarrosPorDia, user->diasSemFumar);
+
+    float tempoVida = tempoVidaRecuperadoMinutos(user->cigarrosPorDia, user->diasSemFumar);
+
+    printf("Ja foi economizado %2.f reais\n", economia);
+
+    printf("Ja foram %2.f cigarros não fumados\n", naoFumados);
+    
+    printf("O tempo de vida recuperado foi de %i minutos\n", tempoVida);
+    
 }
 
 int menu(){
     int op;
-    printf("======================================");
-    printf("= 1 - Relatorio do usuario           =");
-    printf("= 2 - Alterar dados                  =");
-    printf("= 3 - Teste de dependencia           =");
-    printf("= 0 - sair                           =");
-    printf("=");
-    printf("=");
-    printf("=");
-    printf("=");
+    printf("======================================\n");
+    printf("= 1 - Relatorio do usuario           =\n");
+    printf("= 2 - Alterar dados                  =\n");
+    printf("= 3 - Teste de dependencia           =\n");
+    printf("= 0 - sair                           =\n");
+    printf("======================================\n");
     scanf(" %i",&op);
     return op;
 }
