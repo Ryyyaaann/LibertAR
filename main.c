@@ -5,43 +5,46 @@
 #include "sys.h"
 
 
+
 int main(){
-    int op;
-    infoUsuario user = {0};
+    int op = -1;
+
     printf("Seja bem-vindo !\n");
 
-    ColetarDados(&user);
+    cadastrarUsuario();
     while (op != 0)
     {
-        int op = menu();
+        op = menu();
         switch (op)
         {
             case 1:
-                system("cls");
-                system("clear");
-                exibirRelatorio(&user);
+                limparTela();
+                login();
             break;
             
             case 2:
-                system("cls");
-                system("clear");
-                ColetarDados(&user);
-            
+                limparTela();
+                exibirRelatorio();
             break;
             
             case 3:
-                system("cls");
-                system("clear");
-                formulario(&user);
+                limparTela();
+                cadastrarUsuario();
+            
+            break;
+            
+            case 4:
+                limparTela();
+                formulario();
             break;
 
             case 0:
-                system("cls");
-                system("clear");
+                limparTela();
                 break;
        
             default:
                 printf("Digite uma opção existente");
+                system("pause");
                 break;
        }
     }
