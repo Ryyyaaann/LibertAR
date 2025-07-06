@@ -33,9 +33,27 @@ void cadastrarUsuario();
 void exibirRelatorio();
 void limparTela();
 void login();
+void EditarUsuario();
+void inicializarUsuarios(); 
+void liberarMemoriaUsuarios();
+void consultarUsuario();
+void filtro();
+
+
 
 extern int indice_usuario_logado;
 extern int usuarios_cadastrados;
 extern infoUsuario usuarios[MAX_USUARIOS];
+
+extern int master_logado;
+extern const char* MASTER_USER;
+extern const char* MASTER_PASS;
+
+
+
+
+
+
+
 
 #endif 

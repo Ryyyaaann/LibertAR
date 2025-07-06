@@ -8,6 +8,9 @@
 infoUsuario usuarios[MAX_USUARIOS];
 int usuarios_cadastrados = 0;
 int indice_usuario_logado = -1;
+int master_logado = 0;
+const char *MASTER_USER = "master";
+const char *MASTER_PASS = "admin123";
 
 int formulario()
 
@@ -180,7 +183,7 @@ int formulario()
     }
 
     // Resultado:
-    // Avaliação do resultado
+    // Avaliacão do resultado
 
     // Dependência (soma dos pontos):
 
@@ -210,12 +213,7 @@ int tempoVidaRecuperadoMinutos(int cigarrosPorDia, int diasSemFumar)
 }
 void login()
 {
-    if (usuarios_cadastrados == 0)
-    {
-        printf("Nenhum usuario cadastrado.\n");
-        system("pause");
-        return;
-    }
+
     int temp_indice_usario = -1;
     char login[50];
     char senha[30];
@@ -223,6 +221,27 @@ void login()
     getchar();
     scanf("%s", login);
 
+    printf("Senha:");
+    getchar();
+    fgets(senha, sizeof(senha), stdin);
+    senha[strcspn(senha, "\n")] = 0;
+
+    if (strcmp(login, MASTER_USER) == 0 && strcmp(senha, MASTER_PASS) == 0)
+    {
+        printf("logado como Master");
+        master_logado = 1;
+        indice_usuario_logado = -1;
+        system("pause");
+        return;
+    }
+
+    master_logado = 0;
+    if (usuarios_cadastrados == 0)
+    {
+        printf("Nenhum usuario cadastrado.\n");
+        system("pause");
+        return;
+    }
 
     for (int i = 0; i < usuarios_cadastrados; i++)
     {
@@ -255,7 +274,7 @@ void login()
         printf("usuario nao encontrado");
         indice_usuario_logado = -1;
     }
-    system("pause");    
+    system("pause");
 }
 
 void cadastrarUsuario()
@@ -300,6 +319,36 @@ void cadastrarUsuario()
     printf("Dados atualizados");
     system("pause");
 }
+void EditarUsuario()
+{
+
+    infoUsuario *user = &usuarios[indice_usuario_logado];
+
+    printf("(Edicão das informacões)\n");
+    printf("Nome:");
+    scanf(" %[^\n]", user->nome);
+
+    printf("Usuario:");
+    scanf("%s", user->usuario);
+
+    printf("Senha:");
+    scanf("%s", user->senha);
+
+    printf("Cigarros por dia:");
+    scanf(" %d", &user->cigarrosPorDia);
+
+    printf("Preco do maco:");
+    scanf(" %f", &user->precoMaco);
+
+    printf("Dias sem fumar:");
+    scanf(" %d", &user->diasSemFumar);
+
+    user->macosPorDia = (float)user->cigarrosPorDia / 20;
+
+    limparTela();
+    printf("Dados atualizados");
+    system("pause");
+}
 
 void exibirRelatorio()
 {
@@ -313,7 +362,7 @@ void exibirRelatorio()
         printf("O seu relatorio completo\n");
         printf("Nome: %s\n", usuarios[indice_usuario_logado].nome);
         printf("Cigarros por dia (antes de parar): %d\n", usuarios[indice_usuario_logado].cigarrosPorDia);
-        printf("Maços por dia: %.2f\n", usuarios[indice_usuario_logado].macosPorDia);
+        printf("Macos por dia: %.2f\n", usuarios[indice_usuario_logado].macosPorDia);
         printf("Dias sem fumar: %d\n", usuarios[indice_usuario_logado].diasSemFumar);
 
         float economia = economiaPorDinheiro(usuarios[indice_usuario_logado].precoMaco, usuarios[indice_usuario_logado].macosPorDia, usuarios[indice_usuario_logado].diasSemFumar);
@@ -324,10 +373,95 @@ void exibirRelatorio()
 
         printf("Ja foi economizado %.2f reais\n", economia);
 
-        printf("Ja foram %.2f cigarros nao fumados\n", naoFumados);
+        printf("Ja foram %.2f   cigarros nao fumados\n", naoFumados);
 
-        printf("O tempo de vida recuperado foi de %d minutos\n", tempoVida);
+        printf("O tempo de vida recuperado foi de %.0f minutos\n", tempoVida);
     }
+    system("pause");
+}
+
+void consultarUsuario()
+{
+    if (master_logado == 0)
+    {
+        printf("apenas adiministradores\n");
+        system("pause");
+        return;
+    }
+    int temp_indice_usario = -1;
+
+    char nome[50];
+    printf("buscar por nome do usuario: ");
+    scanf(" %s", nome);
+    for (int i = 0; i < usuarios_cadastrados; i++)
+    {
+        if (strcmp(nome, usuarios[i].nome) == 0)
+        {
+            temp_indice_usario = i;
+            printf("O seu relatorio completo\n");
+            printf("Nome: %s\n", usuarios[temp_indice_usario].nome);
+            printf("Cigarros por dia (antes de parar): %d\n", usuarios[temp_indice_usario].cigarrosPorDia);
+            printf("Macos por dia: %.2f\n", usuarios[temp_indice_usario].macosPorDia);
+            printf("Dias sem fumar: %d\n", usuarios[temp_indice_usario].diasSemFumar);
+
+            float economia = economiaPorDinheiro(usuarios[temp_indice_usario].precoMaco, usuarios[temp_indice_usario].macosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            float naoFumados = CigarrosNaoFumados(usuarios[temp_indice_usario].cigarrosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            float tempoVida = tempoVidaRecuperadoMinutos(usuarios[temp_indice_usario].cigarrosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            printf("Ja foi economizado %.2f reais\n", economia);
+
+            printf("Ja foram %.2f   cigarros nao fumados\n", naoFumados);
+
+            printf("O tempo de vida recuperado foi de %.0f minutos\n", tempoVida);
+            break;
+        }
+    }
+
+    system("pause");
+}
+
+void filtro()
+{
+    if (master_logado == 0)
+    {
+        printf("apenas adiministradores\n");
+        system("pause");
+        return;
+    }
+
+    int temp_indice_usario = -1;
+
+    int nivel_dependencia;
+    printf("nivel de dependencia: ");
+    scanf(" %d", &nivel_dependencia);
+    for (int i = 0; i < usuarios_cadastrados; i++)
+    {
+        if (nivel_dependencia == usuarios[i].nivelDependencia)
+        {
+            temp_indice_usario = i;
+            printf("O seu relatorio completo\n");
+            printf("Nome: %s\n", usuarios[temp_indice_usario].nome);
+            printf("Cigarros por dia (antes de parar): %d\n", usuarios[temp_indice_usario].cigarrosPorDia);
+            printf("Macos por dia: %.2f\n", usuarios[temp_indice_usario].macosPorDia);
+            printf("Dias sem fumar: %d\n", usuarios[temp_indice_usario].diasSemFumar);
+
+            float economia = economiaPorDinheiro(usuarios[temp_indice_usario].precoMaco, usuarios[temp_indice_usario].macosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            float naoFumados = CigarrosNaoFumados(usuarios[temp_indice_usario].cigarrosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            float tempoVida = tempoVidaRecuperadoMinutos(usuarios[temp_indice_usario].cigarrosPorDia, usuarios[temp_indice_usario].diasSemFumar);
+
+            printf("Ja foi economizado %.2f reais\n", economia);
+
+            printf("Ja foram %.2f   cigarros nao fumados\n", naoFumados);
+
+            printf("O tempo de vida recuperado foi de %.0f minutos\n", tempoVida);
+            printf("\n\n");
+        }
+    }
+
     system("pause");
 }
 
@@ -338,13 +472,38 @@ int menu()
     printf("======================================\n");
     printf("=      BEM-VINDO AO 'libertAR'       =\n");
     printf("======================================\n");
-    printf("= 1 - Login                          =\n");
-    printf("= 2 - Ver meu Relatorio de Progresso =\n");
-    printf("= 3 - Cadastrar Novo Usuario         =\n");
-    printf("= 4 - Fazer Teste de Dependencia     =\n");
-    printf("= 0 - Sair                           =\n");
+
+    if (master_logado)
+    {
+        printf("= Logado como: MASTER                =\n");
+        printf("======================================\n");
+        printf("= 3 - Cadastrar Novo Usuario         =\n");
+        printf("= 6 - Consultar usuarios             =\n");
+        printf("= 7 - Filtrar por Dependencia        =\n");
+        printf("= 0 - Logout                         =\n");
+    }
+    else if (indice_usuario_logado != -1)
+    {
+
+        printf("= Logado como: %-20.20s =\n", usuarios[indice_usuario_logado].usuario);
+        printf("======================================\n");
+        printf("= 2 - Ver meu Relatorio de Progresso =\n");
+        printf("= 4 - Editar minhas informacoes      =\n");
+        printf("= 5 - Fazer Teste de Dependencia     =\n");
+        printf("= 0 - Logout                         =\n");
+    }
+    else
+    {
+
+        printf("= 1 - Login                          =\n");
+        printf("= 3 - Cadastrar Novo Usuario         =\n");
+        printf("= 0 - Sair do Programa               =\n");
+    }
+
     printf("======================================\n");
+    printf("Escolha uma opcao: ");
     scanf(" %i", &op);
+
     return op;
 }
 
