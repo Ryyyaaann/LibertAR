@@ -253,10 +253,7 @@ void login()
     }
     if (temp_indice_usario != -1)
     {
-        printf("Senha:");
-        getchar();
-        fgets(senha, sizeof(senha), stdin);
-        senha[strcspn(senha, "\n")] = 0;
+
 
         if (strcmp(senha, usuarios[temp_indice_usario].senha) == 0)
         {
